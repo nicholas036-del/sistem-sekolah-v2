@@ -20,19 +20,23 @@
         <dl class="divide-y divide-[#EFEDE6] text-sm">
             <div class="flex justify-between px-8 py-4">
                 <dt class="text-xs uppercase tracking-[0.1em] text-slate-400">NIS</dt>
-                <dd class="font-medium text-[#16213A]">{{ $student['nis'] }}</dd>
+                <dd class="font-medium text-[#16213A]">{{ $student->nis }}</dd>
             </div>
             <div class="flex justify-between px-8 py-4">
                 <dt class="text-xs uppercase tracking-[0.1em] text-slate-400">Nama Lengkap</dt>
-                <dd class="font-medium text-[#16213A]">{{ $student['name'] }}</dd>
+                <dd class="font-medium text-[#16213A]">{{ $student->name }}</dd>
             </div>
             <div class="flex justify-between px-8 py-4">
-                <dt class="text-xs uppercase tracking-[0.1em] text-slate-400">Kelas</dt>
-                <dd class="font-medium text-[#16213A]">{{ $student['class'] }}</dd>
+                <dt class="text-xs uppercase tracking-[0.1em] text-slate-400">Jenis Kelamin</dt>
+                <dd class="font-medium text-[#16213A]">{{ $student->gender }}</dd>
             </div>
             <div class="flex justify-between px-8 py-4">
                 <dt class="text-xs uppercase tracking-[0.1em] text-slate-400">Jurusan</dt>
-                <dd class="font-medium text-[#16213A]">{{ $student['major'] }}</dd>
+                <dd class="font-medium text-[#16213A]">{{ $student->major }}</dd>
+            </div>
+            <div class="flex justify-between px-8 py-4">
+                <dt class="text-xs uppercase tracking-[0.1em] text-slate-400">Kelas</dt>
+                <dd class="font-medium text-[#16213A]">{{ $student->class }}</dd>
             </div>
         </dl>
 

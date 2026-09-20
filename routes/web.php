@@ -17,7 +17,7 @@ Route::resource('students', StudentController::class)->parameters(['students' =>
 Route::resource('classes', SchoolClassController::class)->parameters(['classes' => 'id']);
 
 // Teacher Management (Resource)
-Route::resource('teachers', TeacherController::class)->parameters(['teachers' => 'id']);
+Route::resource('teachers', TeacherController::class)->parameters(['teachers' => 'id']); 
 
 // Major Management (Resource)
 Route::resource('majors', MajorController::class)->parameters(['majors' => 'id']);

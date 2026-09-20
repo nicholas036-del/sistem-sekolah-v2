@@ -10,8 +10,8 @@
         <div class="flex items-start justify-between border-b border-[#E5E3DB] bg-[#FCFBF8] px-8 py-6">
             <div>
                 <p class="mb-1 text-[11px] uppercase tracking-[0.2em] text-[#A16207]">Lembar Kelas</p>
-                <h1 class="font-display text-3xl font-semibold text-[#16213A]">{{ $class['name'] }}</h1>
-                <p class="mt-1 text-sm text-slate-500">Tingkat {{ $class['grade'] }}</p>
+                <h1 class="font-display text-3xl font-semibold text-[#16213A]">{{ $student->name }}</h1>
+                <p class="mt-1 text-sm text-slate-500">Tingkat {{ $student->nis}}</p>
             </div>
             <a href="{{ route('classes.edit', ['id' => $class['id']]) }}"
                 class="bg-[#16213A] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#26324f]">Ubah</a>

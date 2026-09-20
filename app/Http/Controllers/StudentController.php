@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class StudentController
@@ -32,7 +33,7 @@ class StudentController
      */
     public function store(Request $request)
     {
-        return 'Menambah data siswa baru';
+       print_r($request->all());
     }
 
     /**
@@ -41,6 +42,12 @@ class StudentController
     public function show(string $id)
     {
         $title = 'Sistem Sekolah - Detail Siswa';
+        $student = Student::find($id);
+
+        return view('students.show', [
+            'title' => $title,
+            'student' => $student
+        ]);
         $student = $this->findStudent($id);
 
         return view('students.show', compact('title', 'student'));
