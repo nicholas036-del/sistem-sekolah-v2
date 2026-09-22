@@ -20,8 +20,9 @@
                 <tr class="border-b border-[#16213A] text-[11px] uppercase tracking-[0.15em] text-[#16213A]">
                     <th class="w-14 px-5 py-3.5 font-semibold">No.</th>
                     <th class="px-5 py-3.5 font-semibold">NIS</th>
-                    <th class="px-5 py-3.5 font-semibold">Nama Siswa</th>
+                    <th class="px-5 py-3.5 font-semibold">Nama Lengkap Siswa</th>
                     <th class="px-5 py-3.5 font-semibold">Kelas</th>
+                    <th class="px-5 py-3.5 font-semibold">Jenis Kelamin</th>
                     <th class="px-5 py-3.5 font-semibold">Jurusan</th>
                     <th class="px-5 py-3.5 text-right font-semibold">Tindakan</th>
                 </tr>
@@ -33,22 +34,22 @@
                             {{ $loop->iteration }}
                         </td>
                         <td class="px-5 py-4 font-mono text-xs text-slate-500">
-                            {{ $student['nis'] }}
+                            {{ $student->nis }}
                         </td>
                         <td class="px-5 py-4 font-medium text-[#16213A]">
-                            {{ $student['name'] }}
+                            {{ $student->name }}
                         </td>
                         <td class="px-5 py-4">
-                            {{ $student['class'] }}
+                            {{ $student->class }}
                         </td>
                         <td class="px-5 py-4">
-                            {{ $student['major'] }}
+                            {{ $student->major }}
                         </td>
                         <td class="px-5 py-4">
                             <div class="flex justify-end gap-4 text-xs font-medium">
-                                <a href="{{ route('students.show', ['id' => $student['id']]) }}"
+                                <a href="{{ route('students.show', ['id' => $student->id]) }}"
                                     class="text-[#16213A] hover:text-[#A16207]">Lihat</a>
-                                <a href="{{ route('students.edit', ['id' => $student['id']]) }}"
+                                <a href="{{ route('students.edit', ['id' => $student->id]) }}"
                                     class="text-[#16213A] hover:text-[#A16207]">Ubah</a>
                                 <form action="{{ route('students.destroy', ['id' => $student['id']]) }}" method="POST"
                                     onsubmit="return confirm('Hapus data siswa ini dari buku induk?')">

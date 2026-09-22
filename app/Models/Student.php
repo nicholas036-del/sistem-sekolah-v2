@@ -10,13 +10,5 @@ use Illuminate\Database\Eloquent\Model;
 #[Table('students')]
 class Student extends Model
 {
-    protected $table = 'students';
-
-    protected $fillable = [
-        'nis',
-        'name',
-        'gender',
-        'major',
-        'class',
-    ];
+    
 }

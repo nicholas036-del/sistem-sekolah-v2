@@ -13,9 +13,13 @@ class StudentController
     public function index()
     {
         $title = 'Sistem Sekolah - Daftar Siswa';
-        $students = $this->students();
+        $students = Student::select(['id', 'nis', 'name', 'gender', 'major'])
+            ->get();
 
-        return view('students.index', compact('title', 'students'));
+        return view('students.index', [
+            'title' => $title,
+            'students' => $students
+        ]);
     }
 
     /**
@@ -33,7 +37,20 @@ class StudentController
      */
     public function store(Request $request)
     {
-       print_r($request->all());
+        // validasi
+        $validatedRequest = $request->validate([
+            'nis'    => ['required', 'string', 'size:4', 'unique:students,nis'],
+            'name'   => ['required', 'string'],
+            'gender' => ['required', 'string', 'in:L,P'],
+            'major'  => ['required', 'string', 'in:AKL,TKJ,BID'],
+            'class'  => ['required', 'string'],
+        ]);
+
+        // Tambahan Data ke Database
+        Student::create($validatedRequest);
+
+        // Handle If Success
+        return redirect()->route('students.index');
     }
 
     /**
@@ -42,13 +59,7 @@ class StudentController
     public function show(string $id)
     {
         $title = 'Sistem Sekolah - Detail Siswa';
-        $student = Student::find($id);
-
-        return view('students.show', [
-            'title' => $title,
-            'student' => $student
-        ]);
-        $student = $this->findStudent($id);
+        $student = Student::findOrFail($id)->toArray();
 
         return view('students.show', compact('title', 'student'));
     }
@@ -59,7 +70,7 @@ class StudentController
     public function edit(string $id)
     {
         $title = 'Sistem Sekolah - Edit Siswa';
-        $student = $this->findStudent($id);
+        $student = Student::findOrFail($id)->toArray();
 
         return view('students.edit', compact('title', 'student'));
     }
@@ -67,9 +78,22 @@ class StudentController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        return "Mengubah data siswa dengan ID: {$id}";
+        $validatedRequest = $request->validate([
+            'nis'    => ['required', 'string', 'size:4', 'unique:students,nis,' . $id],
+            'name'   => ['required', 'string'],
+            'gender' => ['required', 'string', 'in:L,P'],
+            'major'  => ['required', 'string', 'in:AKL,TKJ,BID'],
+            'class'  => ['required', 'string'],
+        ]);
+
+        // Tambahan Data ke Database
+        $student = Student::findOrFail($id);
+        $student->update($validatedRequest);
+
+        // Handle If Success
+        return redirect()->route('students.index');
     }
 
     /**
@@ -77,50 +101,9 @@ class StudentController
      */
     public function destroy(string $id)
     {
-        return "Menghapus data siswa dengan ID: {$id}";
-    }
+        $student = Student::findOrFail($id);
+        $student->delete();
 
-    /**
-     * Get the dummy student records.
-     *
-     * @return array<int, array{id: int, nis: string, name: string, class: string, major: string}>
-     */
-    private function students(): array
-    {
-        return [
-            [
-                'id' => 1,
-                'nis' => '1001',
-                'name' => 'Andi',
-                'class' => 'XII TKJ 1',
-                'major' => 'TKJ',
-            ],
-            [
-                'id' => 2,
-                'nis' => '1002',
-                'name' => 'Budi',
-                'class' => 'XII AKL 1',
-                'major' => 'AKL',
-            ],
-            [
-                'id' => 3,
-                'nis' => '1004',
-                'name' => 'Britney',
-                'class' => 'XII TKJ 3',
-                'major' => 'TKJ',
-            ],
-        ];
-    }
-
-    /**
-     * Find a student record by id, defaulting to the first record.
-     *
-     * @return array{id: int, nis: string, name: string, class: string, major: string}
-     */
-    private function findStudent(string $id): array
-    {
-        $student = collect($this->students())->firstWhere('id', (int) $id);
-
-        return $student ?? $this->students()[0];
+        return redirect()->route('students.index');
     }
 }
