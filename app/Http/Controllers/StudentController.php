@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Student\StoreRequest;
+use App\Http\Requests\Student\UpdateRequest;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\HttpCache\Store;
 
 class StudentController
 {
@@ -35,16 +38,10 @@ class StudentController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         // validasi
-        $validatedRequest = $request->validate([
-            'nis'    => ['required', 'string', 'size:4', 'unique:students,nis'],
-            'name'   => ['required', 'string'],
-            'gender' => ['required', 'string', 'in:L,P'],
-            'major'  => ['required', 'string', 'in:AKL,TKJ,BID'],
-            'class'  => ['required', 'string'],
-        ]);
+        $validatedRequest = $request->validated();
 
         // Tambahan Data ke Database
         Student::create($validatedRequest);
@@ -78,15 +75,10 @@ class StudentController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
-    {
-        $validatedRequest = $request->validate([
-            'nis'    => ['required', 'string', 'size:4', 'unique:students,nis,' . $id],
-            'name'   => ['required', 'string'],
-            'gender' => ['required', 'string', 'in:L,P'],
-            'major'  => ['required', 'string', 'in:AKL,TKJ,BID'],
-            'class'  => ['required', 'string'],
-        ]);
+    public function update(UpdateRequest $request, $id)
+    {   
+        // Validasi
+        $validatedRequest = $request->validated();
 
         // Tambahan Data ke Database
         $student = Student::findOrFail($id);
