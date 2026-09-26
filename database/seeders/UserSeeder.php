@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -19,9 +21,9 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => $userTeacherEmail],
             [
-                'name' => 'Harnever',
+                'name'     => 'Harnever',
                 'password' => bcrypt('password'),
-                'role' => 'teacher',
+                'role'     => 'teacher',
             ]
         );
 
@@ -29,10 +31,13 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => $userStudentEmail],
             [
-                'name' => 'Richie',
+                'name'     => 'Richie',
                 'password' => bcrypt('password'),
-                'role' => 'student',
+                'role'     => 'student',
             ]
         );
+
+        // Buat 100 data siswa acak (via factory)
+        Student::factory()->count(100)->create();
     }
 }

@@ -12,19 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('students', function (Blueprint $table) {
-            if (!Schema::hasColumn('students', 'class_id')) {
-                $table->foreignId('class_id')
-                    ->after('user_id')
-                    ->nullable()
-                    ->constrained('classes');
-            }
-
-            if (!Schema::hasColumn('students', 'major_id')) {
-                $table->foreignId('major_id')
-                    ->after('class_id')
-                    ->nullable()
-                    ->constrained('majors');
-            }
+            $table->foreignId('class_id')->nullable()->constrained('classes')->nullOnDelete();
+            $table->foreignId('major_id')->nullable()->constrained('majors')->nullOnDelete();
         });
     }
 
@@ -34,15 +23,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('students', function (Blueprint $table) {
-            if (Schema::hasColumn('students', 'major_id')) {
-                $table->dropForeign(['major_id']);
-                $table->dropColumn('major_id');
-            }
-
-            if (Schema::hasColumn('students', 'class_id')) {
-                $table->dropForeign(['class_id']);
-                $table->dropColumn('class_id');
-            }
+            $table->dropForeign(['class_id']);
+            $table->dropForeign(['major_id']);
+            $table->dropColumn(['class_id', 'major_id']);
         });
     }
 };
