@@ -6,7 +6,6 @@ use App\Http\Requests\Student\StoreRequest;
 use App\Http\Requests\Student\UpdateRequest;
 use App\Models\Student;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\HttpCache\Store;
 
 class StudentController
 {
@@ -16,18 +15,17 @@ class StudentController
     public function index(Request $request)
     {
         $title = 'Sistem Sekolah - Daftar Siswa';
-
         $search = $request->query('search');
         $class = $request->query('class');
         $major = $request->query('major');
 
-        $students = Student::select(['id', 'nis', 'name', 'gender', 'major'])
-            ->when($search, function($query, $search) {
-                $query->where(function($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('nis', 'like', "%{$search}%");   
+        // PERBAIKAN: Hapus 'major' dari select jika kolomnya belum ada di database
+        $students = Student::select(['id', 'nis', 'name', 'gender'])
+            ->when($search, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('nis', 'like', "%{$search}%");
                 });
-                   
             })
             ->when($class, fn($query, $class) => $query->where('class', '=', $class))
             ->when($major, fn($query, $major) => $query->where('major', '=', $major))
@@ -51,7 +49,6 @@ class StudentController
     public function create()
     {
         $title = 'Sistem Sekolah - Tambah Siswa';
-
         return view('students.create', compact('title'));
     }
 
@@ -60,13 +57,9 @@ class StudentController
      */
     public function store(StoreRequest $request)
     {
-        // validasi
         $validatedRequest = $request->validated();
-
-        // Tambahan Data ke Database
         Student::create($validatedRequest);
 
-        // Handle If Success
         return redirect()->route('students.index');
     }
 
@@ -97,14 +90,10 @@ class StudentController
      */
     public function update(UpdateRequest $request, $id)
     {   
-        // Validasi
         $validatedRequest = $request->validated();
-
-        // Tambahan Data ke Database
         $student = Student::findOrFail($id);
         $student->update($validatedRequest);
 
-        // Handle If Success
         return redirect()->route('students.index');
     }
 
