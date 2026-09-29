@@ -77,14 +77,13 @@ class StudentController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        $title = 'Sistem Sekolah - Edit Siswa';
-        $student = Student::findOrFail($id)->toArray();
+   public function edit(string $id)
+{
+    $title = 'Sistem Sekolah - Edit Siswa';
+    $student = Student::findOrFail($id)->toArray(); // Pastikan data terambil semua termasuk class dan major
 
-        return view('students.edit', compact('title', 'student'));
-    }
-
+    return view('students.edit', compact('title', 'student'));
+}
     /**
      * Update the specified resource in storage.
      */

@@ -8,7 +8,7 @@
             class="text-xs uppercase tracking-[0.15em] text-slate-400 hover:text-[#A16207]">&larr; Buku Induk</a>
         <h1 class="font-display mt-2 text-3xl font-semibold text-[#16213A]">Ubah Data Siswa</h1>
         <p class="mt-1 text-sm text-slate-500">Memperbarui catatan atas nama
-            <span class="font-medium text-[#16213A]">{{ $student['name'] }}</span>.
+            <span class="font-medium text-[#16213A]">{{ $student['name'] ?? 'Siswa' }}</span>.
         </p>
     </div>
 
@@ -20,7 +20,7 @@
         <div>
             <label for="nis"
                 class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">NIS</label>
-            <input type="text" id="nis" name="nis" value="{{ old('nis', $student['nis']) }}"
+            <input type="text" id="nis" name="nis" value="{{ old('nis', $student['nis'] ?? '') }}"
                 class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
             @error('nis')
                 <span class="mt-1.5 block text-xs text-red-500">{{ $message }}</span>
@@ -29,9 +29,8 @@
 
         <div>
             <label for="name"
-                class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Nama
-                Lengkap</label>
-            <input type="text" id="name" name="name" value="{{ old('name', $student['name']) }}"
+                class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Nama Lengkap</label>
+            <input type="text" id="name" name="name" value="{{ old('name', $student['name'] ?? '') }}"
                 class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
             @error('name')
                 <span class="mt-1.5 block text-xs text-red-500">{{ $message }}</span>
@@ -41,7 +40,7 @@
         <div>
             <label for="class"
                 class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Kelas</label>
-            <input type="text" id="class" name="class" value="{{ old('class', $student['class']) }}"
+            <input type="text" id="class" name="class" value="{{ old('class', $student['class'] ?? '') }}"
                 class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
             @error('class')
                 <span class="mt-1.5 block text-xs text-red-500">{{ $message }}</span>
@@ -55,12 +54,12 @@
             <div class="flex gap-6 border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5">
                 <label class="flex items-center gap-2 text-sm text-[#16213A]">
                     <input type="radio" name="gender" value="L" class="accent-[#A16207]"
-                        @checked(old('gender', $student['gender']) === 'L')>
+                        @checked(old('gender', $student['gender'] ?? '') === 'L')>
                     Laki-laki
                 </label>
                 <label class="flex items-center gap-2 text-sm text-[#16213A]">
                     <input type="radio" name="gender" value="P" class="accent-[#A16207]"
-                        @checked(old('gender', $student['gender']) === 'P')>
+                        @checked(old('gender', $student['gender'] ?? '') === 'P')>
                     Perempuan
                 </label>
             </div>
@@ -74,10 +73,10 @@
                 class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Jurusan</label>
             <select id="major" name="major"
                 class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
-                <option value="" disabled {{ old('major', $student['major']) ? '' : 'selected' }}>-- Pilih Jurusan --</option>
-                <option value="AKL" @selected(old('major', $student['major']) === 'AKL')>AKL</option>
-                <option value="TKJ" @selected(old('major', $student['major']) === 'TKJ')>TKJ</option>
-                <option value="BID" @selected(old('major', $student['major']) === 'BID')>BID</option>
+                <option value="" disabled {{ old('major', $student['major'] ?? '') ? '' : 'selected' }}>-- Pilih Jurusan --</option>
+                <option value="AKL" @selected(old('major', $student['major'] ?? '') === 'AKL')>AKL</option>
+                <option value="TKJ" @selected(old('major', $system['major'] ?? ($student['major'] ?? '')) === 'TKJ')>TKJ</option>
+                <option value="BID" @selected(old('major', $student['major'] ?? '') === 'BID')>BID</option>
             </select>
             @error('major')
                 <span class="mt-1.5 block text-xs text-red-500">{{ $message }}</span>
