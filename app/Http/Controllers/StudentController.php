@@ -9,37 +9,40 @@ use Illuminate\Http\Request;
 
 class StudentController
 {
+    private const SCHOOL_CLASSES = [
+        '10 AKL', '11 AKL', '11 TKJ 1', '11 TKJ 2',
+        '10 BID', '12 TKJ 1', '12 TKJ 2', '12 TKJ 3',
+        '12 AKL', '12 BID', '10 TKJ 1', '10 TKJ 2',
+    ];
+
+    private const MAJORS = ['AKL', 'BID', 'TKJ'];
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $title = 'Sistem Sekolah - Daftar Siswa';
         $search = $request->query('search');
         $class = $request->query('class');
         $major = $request->query('major');
 
-        // PERBAIKAN: Hapus 'major' dari select jika kolomnya belum ada di database
-        $students = Student::select(['id', 'nis', 'name', 'gender'])
+        $students = Student::select(['id', 'nis', 'name', 'gender', 'class', 'major'])
             ->when($search, function ($query, $search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%")
                         ->orWhere('nis', 'like', "%{$search}%");
                 });
             })
-            ->when($class, fn($query, $class) => $query->where('class', '=', $class))
-            ->when($major, fn($query, $major) => $query->where('major', '=', $major))
+            ->when($class, fn ($query, $class) => $query->where('class', $class))
+            ->when($major, fn ($query, $major) => $query->where('major', $major))
             ->paginate(10)
             ->withQueryString();
-        
-        $schoolClasses = ['10 AKL', '11 AKL', '11 TKJ 1', '11 TKJ 2', '10 BID', '12 TKJ 1', '12 TKJ 2', '12 TKJ 3'];    
-        $majors = ['AKL', 'BID', 'TKJ'];
 
         return view('students.index', [
-            'title' => $title,
+            'title' => 'Sistem Sekolah - Daftar Siswa',
             'students' => $students,
-            'schoolClasses' => $schoolClasses,
-            'majors' => $majors,
+            'schoolClasses' => self::SCHOOL_CLASSES,
+            'majors' => self::MAJORS,
         ]);
     }
 
@@ -49,6 +52,7 @@ class StudentController
     public function create()
     {
         $title = 'Sistem Sekolah - Tambah Siswa';
+
         return view('students.create', compact('title'));
     }
 
@@ -57,8 +61,7 @@ class StudentController
      */
     public function store(StoreRequest $request)
     {
-        $validatedRequest = $request->validated();
-        Student::create($validatedRequest);
+        Student::create($request->validated());
 
         return redirect()->route('students.index');
     }
@@ -77,21 +80,20 @@ class StudentController
     /**
      * Show the form for editing the specified resource.
      */
-   public function edit(string $id)
-{
-    $title = 'Sistem Sekolah - Edit Siswa';
-    $student = Student::findOrFail($id)->toArray(); // Pastikan data terambil semua termasuk class dan major
+    public function edit(string $id)
+    {
+        $title = 'Sistem Sekolah - Edit Siswa';
+        $student = Student::findOrFail($id)->toArray();
 
-    return view('students.edit', compact('title', 'student'));
-}
+        return view('students.edit', compact('title', 'student'));
+    }
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, $id)
-    {   
-        $validatedRequest = $request->validated();
-        $student = Student::findOrFail($id);
-        $student->update($validatedRequest);
+    public function update(UpdateRequest $request, string $id)
+    {
+        Student::findOrFail($id)->update($request->validated());
 
         return redirect()->route('students.index');
     }
@@ -101,8 +103,7 @@ class StudentController
      */
     public function destroy(string $id)
     {
-        $student = Student::findOrFail($id);
-        $student->delete();
+        Student::findOrFail($id)->delete();
 
         return redirect()->route('students.index');
     }
