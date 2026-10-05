@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\StoreRequest;
 use App\Http\Requests\Student\UpdateRequest;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
-class StudentController
+class StudentController extends Controller
 {
     private const SCHOOL_CLASSES = [
         '10 AKL', '11 AKL', '11 TKJ 1', '11 TKJ 2',
@@ -51,9 +52,11 @@ class StudentController
      */
     public function create()
     {
-        $title = 'Sistem Sekolah - Tambah Siswa';
-
-        return view('students.create', compact('title'));
+        return view('students.create', [
+            'title' => 'Sistem Sekolah - Tambah Siswa',
+            'schoolClasses' => self::SCHOOL_CLASSES,
+            'majors' => self::MAJORS,
+        ]);
     }
 
     /**
@@ -61,50 +64,58 @@ class StudentController
      */
     public function store(StoreRequest $request)
     {
-        Student::create($request->validated());
+        $data = $request->validated();
+        $data['user_id'] = auth()->id();
 
-        return redirect()->route('students.index');
+        Student::create($data);
+
+        return redirect()->route('students.index')
+            ->with('success', 'Siswa berhasil ditambahkan.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Student $student)
     {
-        $title = 'Sistem Sekolah - Detail Siswa';
-        $student = Student::findOrFail($id)->toArray();
-
-        return view('students.show', compact('title', 'student'));
+        return view('students.show', [
+            'title' => 'Sistem Sekolah - Detail Siswa',
+            'student' => $student,
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Student $student)
     {
-        $title = 'Sistem Sekolah - Edit Siswa';
-        $student = Student::findOrFail($id)->toArray();
-
-        return view('students.edit', compact('title', 'student'));
+        return view('students.edit', [
+            'title' => 'Sistem Sekolah - Edit Siswa',
+            'student' => $student,
+            'schoolClasses' => self::SCHOOL_CLASSES,
+            'majors' => self::MAJORS,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, string $id)
+    public function update(UpdateRequest $request, Student $student)
     {
-        Student::findOrFail($id)->update($request->validated());
+        $student->update($request->validated());
 
-        return redirect()->route('students.index');
+        return redirect()->route('students.index')
+            ->with('success', 'Data siswa berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Student $student)
     {
-        Student::findOrFail($id)->delete();
+        $student->delete();
 
-        return redirect()->route('students.index');
+        return redirect()->route('students.index')
+            ->with('success', 'Siswa berhasil dihapus.');
     }
 }

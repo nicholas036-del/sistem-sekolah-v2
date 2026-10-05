@@ -14,7 +14,7 @@
         </a>
     </div>
 
-    <div class="border border-[#E5E3DB] bg-white">
+    <div class="overflow-x-auto border border-[#E5E3DB] bg-white">
         <table class="w-full text-left text-sm">
             <thead>
                 <tr class="border-b border-[#16213A] text-[11px] uppercase tracking-[0.15em] text-[#16213A]">
@@ -27,30 +27,30 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($classes as $class)
+                @forelse ($classes as $schoolClass)
                     <tr class="border-b border-[#EFEDE6] hover:bg-[#FAF9F5]">
-                        <td class="px-5 py-4 font-display text-lg text-[#A16207]">
+                        <td class="font-display px-5 py-4 text-lg text-[#A16207]">
                             {{ $loop->iteration }}
                         </td>
                         <td class="px-5 py-4 font-medium text-[#16213A]">
-                            {{ $class['name'] }}
+                            {{ $schoolClass['name'] ?? '-' }}
                         </td>
                         <td class="px-5 py-4">
-                            {{ $class['grade'] }}
-                        </td>
-                        <td class="px-5 py-4 font-mono text-xs text-slate-500">
-                            {{ $class['major'] }}
+                            {{ $schoolClass['grade'] ?? '-' }}
                         </td>
                         <td class="px-5 py-4">
-                            {{ $class['homeroom_teacher'] }}
+                            {{ $schoolClass['major'] ?? '-' }}
+                        </td>
+                        <td class="px-5 py-4 text-slate-500">
+                            {{ $schoolClass['homeroom_teacher'] ?? '-' }}
                         </td>
                         <td class="px-5 py-4">
-                            <div class="flex justify-end gap-4 text-xs font-medium">
-                                <a href="{{ route('classes.show', ['id' => $class['id']]) }}"
+                            <div class="flex items-center justify-end gap-4 text-xs font-medium">
+                                <a href="{{ route('classes.show', $schoolClass['id']) }}"
                                     class="text-[#16213A] hover:text-[#A16207]">Lihat</a>
-                                <a href="{{ route('classes.edit', ['id' => $class['id']]) }}"
+                                <a href="{{ route('classes.edit', $schoolClass['id']) }}"
                                     class="text-[#16213A] hover:text-[#A16207]">Ubah</a>
-                                <form action="{{ route('classes.destroy', ['id' => $class['id']]) }}" method="POST"
+                                <form action="{{ route('classes.destroy', $schoolClass['id']) }}" method="POST"
                                     onsubmit="return confirm('Hapus data kelas ini?')">
                                     @csrf
                                     @method('DELETE')
@@ -59,7 +59,13 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-5 py-10 text-center text-sm text-slate-400">
+                            Belum ada data kelas.
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

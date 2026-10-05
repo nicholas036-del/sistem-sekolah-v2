@@ -14,39 +14,36 @@
         </a>
     </div>
 
-    <div class="border border-[#E5E3DB] bg-white">
+    <div class="overflow-x-auto border border-[#E5E3DB] bg-white">
         <table class="w-full text-left text-sm">
             <thead>
                 <tr class="border-b border-[#16213A] text-[11px] uppercase tracking-[0.15em] text-[#16213A]">
                     <th class="w-14 px-5 py-3.5 font-semibold">No.</th>
-                    <th class="px-5 py-3.5 font-semibold">Kode</th>
+                    <th class="px-5 py-3.5 font-semibold">Kode Jurusan</th>
                     <th class="px-5 py-3.5 font-semibold">Nama Jurusan</th>
-                    <th class="px-5 py-3.5 font-semibold">Deskripsi</th>
                     <th class="px-5 py-3.5 text-right font-semibold">Tindakan</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($majors as $major)
+                @forelse ($majors as $major)
+                    @php($majorId = data_get($major, 'id'))
                     <tr class="border-b border-[#EFEDE6] hover:bg-[#FAF9F5]">
-                        <td class="px-5 py-4 font-display text-lg text-[#A16207]">
+                        <td class="font-display px-5 py-4 text-lg text-[#A16207]">
                             {{ $loop->iteration }}
                         </td>
-                        <td class="px-5 py-4 font-mono text-xs font-semibold text-[#A16207]">
-                            {{ $major['code'] }}
+                        <td class="px-5 py-4 font-mono text-xs font-semibold text-[#16213A]">
+                            {{ data_get($major, 'code') ?? data_get($major, 'name', '-') }}
                         </td>
                         <td class="px-5 py-4 font-medium text-[#16213A]">
-                            {{ $major['name'] }}
-                        </td>
-                        <td class="px-5 py-4 text-slate-500">
-                            {{ $major['description'] }}
+                            {{ data_get($major, 'description') ?? data_get($major, 'name', '-') }}
                         </td>
                         <td class="px-5 py-4">
-                            <div class="flex justify-end gap-4 text-xs font-medium">
-                                <a href="{{ route('majors.show', ['id' => $major['id']]) }}"
+                            <div class="flex items-center justify-end gap-4 text-xs font-medium">
+                                <a href="{{ route('majors.show', $majorId) }}"
                                     class="text-[#16213A] hover:text-[#A16207]">Lihat</a>
-                                <a href="{{ route('majors.edit', ['id' => $major['id']]) }}"
+                                <a href="{{ route('majors.edit', $majorId) }}"
                                     class="text-[#16213A] hover:text-[#A16207]">Ubah</a>
-                                <form action="{{ route('majors.destroy', ['id' => $major['id']]) }}" method="POST"
+                                <form action="{{ route('majors.destroy', $majorId) }}" method="POST"
                                     onsubmit="return confirm('Hapus data jurusan ini?')">
                                     @csrf
                                     @method('DELETE')
@@ -55,7 +52,13 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="4" class="px-5 py-10 text-center text-sm text-slate-400">
+                            Belum ada data jurusan.
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

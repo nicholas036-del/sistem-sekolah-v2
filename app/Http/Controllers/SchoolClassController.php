@@ -9,29 +9,16 @@ class SchoolClassController
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $title = 'Sistem Sekolah - Daftar Kelas';
-        $classes = [
-            [
-                'id' => 1,
-                'name' => 'XII AKL 1',
-                'grade' => 'XII',
-                'major' => 'AKL',
-                'homeroom_teacher' => 'Budi Santoso',
-            ],
-            [
-                'id' => 2,
-                'name' => 'XII TKJ 1',
-                'grade' => 'XII',
-                'major' => 'TKJ',
-                'homeroom_teacher' => 'Siti Aminah',
-            ],
-        ];
+public function index()
+{
+    $title = 'Sistem Sekolah - Daftar Kelas';
+    $classes = [
+        ['id' => 1, 'name' => 'XII AKL 1', 'grade' => 'XII', 'major' => 'AKL', 'homeroom_teacher' => 'Budi Santoso'],
+        ['id' => 2, 'name' => 'XII TKJ 1', 'grade' => 'XII', 'major' => 'TKJ', 'homeroom_teacher' => 'Siti Aminah'],
+    ];
 
-        return view('classes.index', compact('title', 'classes'));
-    }
-
+    return view('classes.index', compact('title', 'classes'));
+}
     /**
      * Show the form for creating a new resource.
      */

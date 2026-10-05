@@ -14,7 +14,7 @@
         </a>
     </div>
 
-    <div class="border border-[#E5E3DB] bg-white">
+    <div class="overflow-x-auto border border-[#E5E3DB] bg-white">
         <table class="w-full text-left text-sm">
             <thead>
                 <tr class="border-b border-[#16213A] text-[11px] uppercase tracking-[0.15em] text-[#16213A]">
@@ -28,33 +28,33 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($teachers as $teacher)
+                @forelse ($teachers as $teacher)
                     <tr class="border-b border-[#EFEDE6] hover:bg-[#FAF9F5]">
-                        <td class="px-5 py-4 font-display text-lg text-[#A16207]">
+                        <td class="font-display px-5 py-4 text-lg text-[#A16207]">
                             {{ $loop->iteration }}
                         </td>
                         <td class="px-5 py-4 font-mono text-xs text-slate-500">
-                            {{ $teacher['nip'] }}
+                            {{ $teacher['nip'] ?? '-' }}
                         </td>
                         <td class="px-5 py-4 font-medium text-[#16213A]">
-                            {{ $teacher['name'] }}
+                            {{ $teacher['name'] ?? '-' }}
                         </td>
                         <td class="px-5 py-4">
-                            {{ $teacher['gender'] }}
+                            {{ ($teacher['gender'] ?? null) === 'L' ? 'Laki-laki' : 'Perempuan' }}
                         </td>
                         <td class="px-5 py-4">
-                            {{ $teacher['subject'] }}
+                            {{ $teacher['subject'] ?? '-' }}
                         </td>
                         <td class="px-5 py-4">
-                            <x-status-badge :status="$teacher['status']" />
+                            <x-status-badge :status="$teacher['status'] ?? '-'" />
                         </td>
                         <td class="px-5 py-4">
-                            <div class="flex justify-end gap-4 text-xs font-medium">
-                                <a href="{{ route('teachers.show', ['id' => $teacher['id']]) }}"
+                            <div class="flex items-center justify-end gap-4 text-xs font-medium">
+                                <a href="{{ route('teachers.show', $teacher['id']) }}"
                                     class="text-[#16213A] hover:text-[#A16207]">Lihat</a>
-                                <a href="{{ route('teachers.edit', ['id' => $teacher['id']]) }}"
+                                <a href="{{ route('teachers.edit', $teacher['id']) }}"
                                     class="text-[#16213A] hover:text-[#A16207]">Ubah</a>
-                                <form action="{{ route('teachers.destroy', ['id' => $teacher['id']]) }}" method="POST"
+                                <form action="{{ route('teachers.destroy', $teacher['id']) }}" method="POST"
                                     onsubmit="return confirm('Hapus data guru ini?')">
                                     @csrf
                                     @method('DELETE')
@@ -63,7 +63,13 @@
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="7" class="px-5 py-10 text-center text-sm text-slate-400">
+                            Belum ada data guru.
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
