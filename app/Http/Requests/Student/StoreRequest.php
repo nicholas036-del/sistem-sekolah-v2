@@ -38,4 +38,4 @@ class StoreRequest extends FormRequest
             'nis.size'=>'Nomor Induk Siswa harus terdiri dari 4 karakter',
         ];
     }
-}
+}   
