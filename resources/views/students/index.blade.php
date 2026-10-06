@@ -14,10 +14,18 @@
         </a>
     </div>
 
-    <form method="GET" action="{{ route('students.index') }}" class="mb-6 flex flex-wrap items-end gap-3 border border-[#E5E3DB] bg-white p-5">
-        <div class="min-w-55 flex-1">
+    @if (session('success'))
+        <div class="mb-6 border border-green-200 bg-green-50 px-5 py-3 text-sm text-green-800">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <form method="GET" action="{{ route('students.index') }}"
+        class="mb-6 flex flex-wrap items-end gap-3 border border-[#E5E3DB] bg-white p-5">
+        <div class="min-w-[220px] flex-1">
             <label for="search" class="mb-1 block text-[11px] uppercase tracking-[0.15em] text-[#16213A]">Cari</label>
-            <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Nama atau NIS siswa"
+            <input type="text" name="search" id="search" value="{{ request('search') }}"
+                placeholder="Nama atau NIS siswa"
                 class="w-full border border-[#E5E3DB] px-3 py-2 text-sm focus:border-[#16213A] focus:outline-none">
         </div>
 
@@ -27,7 +35,7 @@
                 class="border border-[#E5E3DB] px-3 py-2 text-sm focus:border-[#16213A] focus:outline-none">
                 <option value="">Semua Kelas</option>
                 @foreach ($schoolClasses as $class)
-                    <option value="{{ $class }}" {{ request('class') === $class ? 'selected' : '' }}>{{ $class }}</option>
+                    <option value="{{ $class }}" @selected(request('class') === $class)>{{ $class }}</option>
                 @endforeach
             </select>
         </div>
@@ -38,17 +46,18 @@
                 class="border border-[#E5E3DB] px-3 py-2 text-sm focus:border-[#16213A] focus:outline-none">
                 <option value="">Semua Jurusan</option>
                 @foreach ($majors as $major)
-                    <option value="{{ $major }}" {{ request('major') === $major ? 'selected' : '' }}>{{ $major }}</option>
+                    <option value="{{ $major }}" @selected(request('major') === $major)>{{ $major }}</option>
                 @endforeach
             </select>
         </div>
 
-        <button type="submit" class="bg-[#16213A] px-5 py-2 text-sm font-medium text-white transition hover:bg-[#26324f]">
+        <button type="submit"
+            class="bg-[#16213A] px-5 py-2 text-sm font-medium text-white transition hover:bg-[#26324f]">
             Terapkan
         </button>
     </form>
 
-    <div class="border border-[#E5E3DB] bg-white">
+    <div class="overflow-x-auto border border-[#E5E3DB] bg-white">
         <table class="w-full text-left text-sm">
             <thead>
                 <tr class="border-b border-[#16213A] text-[11px] uppercase tracking-[0.15em] text-[#16213A]">
@@ -64,35 +73,27 @@
             <tbody>
                 @forelse ($students as $student)
                     <tr class="border-b border-[#EFEDE6] hover:bg-[#FAF9F5]">
-                        <td class="px-5 py-4 font-display text-lg text-[#A16207]">
-                            {{ $loop->iteration }}
+                        <td class="font-display px-5 py-4 text-lg text-[#A16207]">
+                            {{ $students->firstItem() + $loop->index }}
                         </td>
-                        <td class="px-5 py-4 font-mono text-xs text-slate-500">
-                            {{ $student->nis ?? '-' }}
-                        </td>
-                        <td class="px-5 py-4 font-medium text-[#16213A]">
-                            {{ $student->name ?? '-' }}
-                        </td>
+                        <td class="px-5 py-4 font-mono text-xs text-slate-500">{{ $student->nis ?? '-' }}</td>
+                        <td class="px-5 py-4 font-medium text-[#16213A]">{{ $student->name ?? '-' }}</td>
+                        <td class="px-5 py-4">{{ $student->class ?? '-' }}</td>
                         <td class="px-5 py-4">
-                            {{ $student->class ?? '-' }}
+                            {{ match ($student->gender) {
+                                'L' => 'Laki-laki',
+                                'P' => 'Perempuan',
+                                default => '-',
+                            } }}
                         </td>
+                        <td class="px-5 py-4">{{ $student->major ?? '-' }}</td>
                         <td class="px-5 py-4">
-                            @if(isset($student->gender))
-                                {{ $student->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}
-                            @else
-                                -
-                            @endif
-                        </td>
-                        <td class="px-5 py-4">
-                            {{ $student->major ?? '-' }}
-                        </td>
-                        <td class="px-5 py-4">
-                            <div class="flex justify-end gap-4 text-xs font-medium">
-                                <!-- Perbaikan rute menggunakan model $student langsung -->
+                            <div class="flex items-center justify-end gap-4 text-xs font-medium">
                                 <a href="{{ route('students.show', $student) }}"
-                                    class="text-[#16213A] hover:text-[#A16207]">Lihat</a>
+                                    class="text-[#16213A] transition hover:text-[#A16207]">Lihat</a>
                                 <a href="{{ route('students.edit', $student) }}"
-                                    class="text-[#16213A] hover:text-[#A16207]">Ubah</a>
+                                    class="text-[#16213A] transition hover:text-[#A16207]"
+                                    title="Ubah data {{ $student->name }}">Ubah</a>
                                 <form action="{{ route('students.destroy', $student) }}" method="POST"
                                     onsubmit="return confirm('Hapus data siswa ini dari buku induk?')">
                                     @csrf
@@ -104,7 +105,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-5 py-8 text-center text-slate-400">
+                        <td colspan="7" class="px-5 py-10 text-center text-sm text-slate-400">
                             Tidak ada data siswa yang ditemukan.
                         </td>
                     </tr>
@@ -113,7 +114,7 @@
         </table>
 
         <div class="p-4">
-            {{ $students->appends(request()->query())->links() }}
+            {{ $students->links() }}
         </div>
     </div>
 @endsection

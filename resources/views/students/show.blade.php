@@ -4,7 +4,13 @@
 
 @section('content')
     <a href="{{ route('students.index') }}"
-        class="text-xs uppercase tracking-[0.15em] text-slate-400 hover:text-[#A16207]">&larr; Buku Induk</a>
+        class="text-xs uppercase tracking-[0.15em] text-slate-400 transition hover:text-[#A16207]">&larr; Buku Induk</a>
+
+    @if (session('success'))
+        <div class="mt-3 border border-green-200 bg-green-50 px-5 py-3 text-sm text-green-800">
+            {{ session('success') }}
+        </div>
+    @endif
 
     <div class="mt-3 border border-[#E5E3DB] bg-white">
         <div class="flex items-start justify-between border-b border-[#E5E3DB] bg-[#FCFBF8] px-8 py-6">
@@ -29,26 +35,26 @@
             <div class="flex justify-between px-8 py-4">
                 <dt class="text-xs uppercase tracking-[0.1em] text-slate-400">Jenis Kelamin</dt>
                 <dd class="font-medium text-[#16213A]">
-                    @if(isset($student->gender))
-                        {{ $student->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}
-                    @else
-                        -
-                    @endif
+                    {{ match ($student->gender) {
+                        'L' => 'Laki-laki',
+                        'P' => 'Perempuan',
+                        default => '-',
+                    } }}
                 </dd>
-            </div>
-            <div class="flex justify-between px-8 py-4">
-                <dt class="text-xs uppercase tracking-[0.1em] text-slate-400">Jurusan</dt>
-                <dd class="font-medium text-[#16213A]">{{ $student->major ?? '-' }}</dd>
             </div>
             <div class="flex justify-between px-8 py-4">
                 <dt class="text-xs uppercase tracking-[0.1em] text-slate-400">Kelas</dt>
                 <dd class="font-medium text-[#16213A]">{{ $student->class ?? '-' }}</dd>
             </div>
+            <div class="flex justify-between px-8 py-4">
+                <dt class="text-xs uppercase tracking-[0.1em] text-slate-400">Jurusan</dt>
+                <dd class="font-medium text-[#16213A]">{{ $student->major ?? '-' }}</dd>
+            </div>
         </dl>
 
         <div class="flex items-center justify-end gap-4 border-t border-[#E5E3DB] px-8 py-5">
             <a href="{{ route('students.index') }}"
-                class="px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-[#16213A]">Kembali</a>
+                class="px-4 py-2.5 text-sm font-medium text-slate-500 transition hover:text-[#16213A]">Kembali</a>
             <form action="{{ route('students.destroy', $student) }}" method="POST"
                 onsubmit="return confirm('Hapus data siswa ini dari buku induk?')">
                 @csrf
