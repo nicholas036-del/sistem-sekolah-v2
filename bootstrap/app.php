@@ -17,8 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => CheckByRole::class,
         ]);
 
+        // Belum login -> halaman login
+        $middleware->redirectGuestsTo('/login');
+
+        // Sudah login -> daftar siswa
         $middleware->redirectUsersTo('/students');
-        
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
