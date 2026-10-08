@@ -21,28 +21,28 @@ class StudentController extends Controller
 
     private const MAJORS = ['AKL', 'BID', 'TKJ'];
 
-    public function index(Request $request): View
-    {
-        $students = Student::select(['id', 'nis', 'name', 'gender', 'class', 'major'])
-            ->when($request->query('search'), function ($query, $search) {
-                $query->where(function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhere('nis', 'like', "%{$search}%");
-                });
-            })
-            ->when($request->query('class'), fn ($query, $class) => $query->where('class', $class))
-            ->when($request->query('major'), fn ($query, $major) => $query->where('major', $major))
-            ->paginate(10)
-            ->withQueryString();
+ public function index(Request $request): View
+{
+    $students = Student::select(['id', 'nis', 'name', 'class', 'major'])
+        ->when($request->query('search'), function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('nis', 'like', "%{$search}%");
+            });
+        })
+        ->when($request->query('class'), fn ($query, $class) => $query->where('class', $class))
+        ->when($request->query('major'), fn ($query, $major) => $query->where('major', $major))
+        ->orderBy('id')
+        ->paginate(10)
+        ->withQueryString();
 
-        return view('students.index', [
-            'title' => 'Sistem Sekolah - Daftar Siswa',
-            'students' => $students,
-            'schoolClasses' => self::SCHOOL_CLASSES,
-            'majors' => self::MAJORS,
-        ]);
-    }
-
+    return view('students.index', [
+        'title' => 'Sistem Sekolah - Daftar Siswa',
+        'students' => $students,
+        'schoolClasses' => self::SCHOOL_CLASSES,
+        'majors' => self::MAJORS,
+    ]);
+}
     public function create(): View
     {
         return view('students.create', [

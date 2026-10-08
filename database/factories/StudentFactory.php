@@ -2,32 +2,33 @@
 
 namespace Database\Factories;
 
-use App\Models\Major;
-use App\Models\SchoolClass;
-use App\Models\Student;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<Student>
- */
 class StudentFactory extends Factory
-{   
-    protected $model = Student::class;
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+{
+    private const CLASSES = [
+        '10 AKL', '10 BID', '10 TKJ 1', '10 TKJ 2',
+        '11 AKL', '11 TKJ 1', '11 TKJ 2',
+        '12 AKL', '12 BID', '12 TKJ 1', '12 TKJ 2', '12 TKJ 3',
+    ];
+
     public function definition(): array
     {
+        $gender = fake()->randomElement(['L', 'P']);
+
         return [
-            'nis'=> fake()->unique()->numerify('####'),
-            'name'=> fake()->name(),
-            'gender'=> fake()->randomElement(['Laki-laki','Perempuan']),
-            'user_id' => User::factory(),
-            'major_id' => Major::inRandomOrder()->first()->id,
-            'class_id' => SchoolClass::inRandomOrder()->first()->id,
+            'nis' => fake()->unique()->numerify('####'),
+            'name' => fake()->name($gender === 'L' ? 'male' : 'female'),
+            'gender' => $gender,
+            'class' => fake()->randomElement(self::CLASSES),
+            'major' => fake()->randomElement(['AKL', 'BID', 'TKJ']),
+            'user_id' => User::create([
+                'name' => fake()->name(),
+                'email' => fake()->unique()->safeEmail(),
+                'password' => bcrypt('password'),
+                'role' => 'student',
+            ])->id,
         ];
     }
 }

@@ -63,9 +63,8 @@
                 <tr class="border-b border-[#16213A] text-[11px] uppercase tracking-[0.15em] text-[#16213A]">
                     <th class="w-14 px-5 py-3.5 font-semibold">No.</th>
                     <th class="px-5 py-3.5 font-semibold">NIS</th>
-                    <th class="px-5 py-3.5 font-semibold">Nama Lengkap Siswa</th>
+                    <th class="px-5 py-3.5 font-semibold">Nama Siswa</th>
                     <th class="px-5 py-3.5 font-semibold">Kelas</th>
-                    <th class="px-5 py-3.5 font-semibold">Jenis Kelamin</th>
                     <th class="px-5 py-3.5 font-semibold">Jurusan</th>
                     <th class="px-5 py-3.5 text-right font-semibold">Tindakan</th>
                 </tr>
@@ -76,24 +75,16 @@
                         <td class="font-display px-5 py-4 text-lg text-[#A16207]">
                             {{ $students->firstItem() + $loop->index }}
                         </td>
-                        <td class="px-5 py-4 font-mono text-xs text-slate-500">{{ $student->nis ?? '-' }}</td>
-                        <td class="px-5 py-4 font-medium text-[#16213A]">{{ $student->name ?? '-' }}</td>
-                        <td class="px-5 py-4">{{ $student->class ?? '-' }}</td>
-                        <td class="px-5 py-4">
-                            {{ match ($student->gender) {
-                                'L' => 'Laki-laki',
-                                'P' => 'Perempuan',
-                                default => '-',
-                            } }}
-                        </td>
-                        <td class="px-5 py-4">{{ $student->major ?? '-' }}</td>
+                        <td class="px-5 py-4 font-mono text-xs text-slate-500">{{ $student->nis }}</td>
+                        <td class="px-5 py-4 font-medium text-[#16213A]">{{ $student->name }}</td>
+                        <td class="px-5 py-4">{{ $student->class }}</td>
+                        <td class="px-5 py-4">{{ $student->major }}</td>
                         <td class="px-5 py-4">
                             <div class="flex items-center justify-end gap-4 text-xs font-medium">
                                 <a href="{{ route('students.show', $student) }}"
-                                    class="text-[#16213A] transition hover:text-[#A16207]">Lihat</a>
+                                    class="text-[#16213A] hover:text-[#A16207]">Lihat</a>
                                 <a href="{{ route('students.edit', $student) }}"
-                                    class="text-[#16213A] transition hover:text-[#A16207]"
-                                    title="Ubah data {{ $student->name }}">Ubah</a>
+                                    class="text-[#16213A] hover:text-[#A16207]">Ubah</a>
                                 <form action="{{ route('students.destroy', $student) }}" method="POST"
                                     onsubmit="return confirm('Hapus data siswa ini dari buku induk?')">
                                     @csrf
@@ -105,16 +96,16 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-5 py-10 text-center text-sm text-slate-400">
+                        <td colspan="6" class="px-5 py-10 text-center text-sm text-slate-400">
                             Tidak ada data siswa yang ditemukan.
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+    </div>
 
-        <div class="p-4">
-            {{ $students->links() }}
-        </div>
+    <div class="mt-4">
+        {{ $students->links() }}
     </div>
 @endsection
